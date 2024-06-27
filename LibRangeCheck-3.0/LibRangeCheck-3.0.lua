@@ -102,6 +102,7 @@ local HandSlotId = GetInventorySlotInfo("HANDSSLOT")
 local math_floor = math.floor
 local UnitIsVisible = UnitIsVisible
 local GetItemInfo = C_Item.GetItemInfo or _G.GetItemInfo
+local IsItemInRange = C_Item.IsItemInRange or _G.IsItemInRange
 
 local GetSpellInfo = GetSpellInfo or function(spellID)
   if not spellID then
@@ -586,7 +587,7 @@ local checkers_Item = setmetatable({}, {
       if not skipInCombatCheck and InCombatLockdownRestriction(unit) then
         return nil
       else
-        return C_Item.IsItemInRange(item, unit) or nil
+        return IsItemInRange(item, unit) or nil
       end
     end
     t[item] = func
@@ -954,7 +955,7 @@ end
 local minItemChecker = function(item)
   if GetItemInfo(item) then
     return function(unit)
-      return C_Item.IsItemInRange(item, unit)
+      return IsItemInRange(item, unit)
     end
   end
 end

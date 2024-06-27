@@ -101,6 +101,7 @@ local GetTime = GetTime
 local HandSlotId = GetInventorySlotInfo("HANDSSLOT")
 local math_floor = math.floor
 local UnitIsVisible = UnitIsVisible
+local GetItemInfo = C_Item.GetItemInfo or _G.GetItemInfo
 
 local GetSpellInfo = GetSpellInfo or function(spellID)
   if not spellID then
@@ -715,7 +716,7 @@ local function createCheckerList(spellList, itemList, interactList)
     for range, items in pairs(itemList) do
       for i = 1, #items do
         local item = items[i]
-        if Item:CreateFromItemID(item):IsItemDataCached() and C_Item.GetItemInfo(item) then
+        if Item:CreateFromItemID(item):IsItemDataCached() and GetItemInfo(item) then
           addChecker(res, range, nil, checkers_Item[item], "item:" .. item)
           break
         end
@@ -951,7 +952,7 @@ local function createSmartChecker(friendChecker, harmChecker, miscChecker)
 end
 
 local minItemChecker = function(item)
-  if C_Item.GetItemInfo(item) then
+  if GetItemInfo(item) then
     return function(unit)
       return C_Item.IsItemInRange(item, unit)
     end
@@ -1310,7 +1311,7 @@ function lib:processItemRequests(itemRequests)
         tremove(items, i)
       elseif pendingItemRequest[item] and GetTime() < itemRequestTimeoutAt[item] then
         return true -- still waiting for server response
-      elseif C_Item.GetItemInfo(item) then
+      elseif GetItemInfo(item) then
         -- print("### processItemRequests: found: " .. tostring(item))
         foundNewItems = true
         itemRequestTimeoutAt[item] = nil
@@ -1448,7 +1449,7 @@ function lib:startMeasurement(unit, resultTable)
     for range, items in pairs(itemList) do
       for i = 1, #items do
         local item = items[i]
-        local name = C_Item.GetItemInfo(item)
+        local name = GetItemInfo(item)
         if name then
           self.itemsToMeasure[name] = item
         end
@@ -1488,7 +1489,7 @@ function lib:checkItems(itemList, verbose, color)
   for range, items in pairsByKeys(itemList) do
     for i = 1, #items do
       local item = items[i]
-      local name = C_Item.GetItemInfo(item)
+      local name = GetItemInfo(item)
       if not name then
         print(MAJOR_VERSION .. ": |c" .. color .. tostring(item) .. "|r: " .. tostring(range) .. "yd: |cffeda500not in cache|r")
       else
